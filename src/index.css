@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Terracota apagado + carbón sobre neutros puros (sin tinte beige ni azul). */
+:root {
+  --bg: #f4f4f4;
+  --surface: #ffffff;
+  --surface-2: #f8f8f8;
+  --surface-3: #efefef;
+  --border: #e7e7e7;
+  --border-strong: #d4d4d4;
+  --fg: #1c1c1c;
+  --fg-muted: #666666;
+  --fg-subtle: #9a9a9a;
+  --accent: #b4614a;
+  --accent-hover: #9d523d;
+  --accent-fg: #ffffff;
+  --accent-soft: #f7ece8;
+  --accent-soft-fg: #8e4532;
+  --carbon: #212121;
+  --carbon-2: #2d2d2d;
+  --carbon-fg: #f4f4f4;
+  --success: #4a7a58;
+  --success-soft: #e8f0ea;
+  --warning: #a07624;
+  --warning-soft: #f5eedf;
+  --danger: #b2433b;
+  --danger-soft: #f8e7e5;
+  --plum: #85566f;
+}
+
+.dark {
+  --bg: #101010;
+  --surface: #181818;
+  --surface-2: #1d1d1d;
+  --surface-3: #242424;
+  --border: #282828;
+  --border-strong: #383838;
+  --fg: #ececec;
+  --fg-muted: #a2a2a2;
+  --fg-subtle: #6f6f6f;
+  --accent: #cc785f;
+  --accent-hover: #da8a72;
+  --accent-fg: #170d0a;
+  --accent-soft: #2b1d18;
+  --accent-soft-fg: #e6a28c;
+  --carbon: #222222;
+  --carbon-2: #2c2c2c;
+  --carbon-fg: #ececec;
+  --success: #84b392;
+  --success-soft: #1a251d;
+  --warning: #d3a854;
+  --warning-soft: #2a2316;
+  --danger: #e2807a;
+  --danger-soft: #2e1a19;
+  --plum: #c18fab;
+}
+
+@theme inline {
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-soft-fg: var(--accent-soft-fg);
+  --color-carbon: var(--carbon);
+  --color-carbon-2: var(--carbon-2);
+  --color-carbon-fg: var(--carbon-fg);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+}
+
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-bg text-fg font-sans antialiased;
+  font-size: 14px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--accent-soft-fg);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}
+
+/* Connection actions are revealed by intentional hover or keyboard focus only. */
+.treatment-marker-menu {
+ visibility: hidden; opacity: 0;
+ transition: opacity 0s 250ms, visibility 0s 250ms;
+}
+/* The padded menu touches the marker, preserving hover along the whole path. */
+.treatment-marker:hover .treatment-marker-menu,
+.treatment-marker:has(:focus-visible) .treatment-marker-menu {
+ visibility: visible; opacity: 1; pointer-events: auto; transition-delay: 0s;
+}
