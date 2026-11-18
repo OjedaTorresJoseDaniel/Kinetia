@@ -21,8 +21,6 @@ export interface EmpleadoModalProps {
   open?: boolean
   empleado?: Empleado
   onClose: () => void
-  /** Forzar que el formulario sea solo para registrar fisioterapeutas */
-  soloFisio?: boolean
   onSuccess?: (emp: Empleado) => void
 }
 
@@ -43,11 +41,11 @@ export interface EmpleadoModalProps {
  *   Estatus_Emp bit not null
  * );
  */
-export function EmpleadoModal({ empleado, onClose, soloFisio, onSuccess }: EmpleadoModalProps) {
+export function EmpleadoModal({ empleado, onClose, onSuccess }: EmpleadoModalProps) {
   const { empleados } = useData()
   const sugerido = Math.max(0, ...empleados.rows.map((e) => e.Num_Emp)) + 1
 
-  const rolInicial: Rol = soloFisio ? 'fisioterapeuta' : empleado ? rolDe(empleado) : 'fisioterapeuta'
+  const rolInicial: Rol = empleado ? rolDe(empleado) : 'fisioterapeuta'
 
   const [tipoRol, setTipoRol] = useState<Rol>(rolInicial)
   const [f, setF] = useState({
@@ -114,13 +112,7 @@ export function EmpleadoModal({ empleado, onClose, soloFisio, onSuccess }: Emple
     esp.toLowerCase().includes((filtroEsp || f.Especialidad).toLowerCase()),
   )
 
-  const tituloModal = soloFisio
-    ? empleado
-      ? 'Editar Fisioterapeuta'
-      : 'Registrar Fisioterapeuta'
-    : empleado
-      ? 'Editar empleado'
-      : 'Nuevo empleado'
+  const tituloModal = empleado ? 'Editar empleado' : 'Nuevo empleado'
 
   return (
     <Modal
@@ -128,7 +120,7 @@ export function EmpleadoModal({ empleado, onClose, soloFisio, onSuccess }: Emple
       onClose={onClose}
       size="lg"
       title={tituloModal}
-      description="Datos de la tabla Persona.Empleados"
+      description="Completa los datos del integrante del equipo."
       footer={
         <>
           <Button variant="secondary" onClick={onClose}>Cancelar</Button>
@@ -137,52 +129,40 @@ export function EmpleadoModal({ empleado, onClose, soloFisio, onSuccess }: Emple
       }
     >
       <div className="grid gap-4 sm:grid-cols-6">
-        {!soloFisio ? (
-          <Field label="Tipo de personal (Tipo_Emp)" required className="sm:col-span-6">
-            <Segmented
-              value={tipoRol}
-              onChange={(v) => {
-                setTipoRol(v)
-                if (v === 'prestador') {
-                  setF((prev) => ({ ...prev, CedulaProfesional: '' }))
-                }
-              }}
-              options={[
-                { value: 'fisioterapeuta', label: 'Fisioterapeuta' },
-                { value: 'prestador', label: 'Prestador de servicio (Practicante)' },
-              ]}
-              className="w-full sm:w-auto"
-            />
-            {tipoRol === 'prestador' && (
-              <p className="mt-1 text-xs text-muted">
-                📌 Los practicantes/prestadores registran pacientes, citas, diagnósticos y ejercicios; <strong>no requieren cédula profesional</strong>.
-              </p>
-            )}
-          </Field>
-        ) : (
-          <div className="sm:col-span-6 rounded-lg bg-surface-2 p-3 text-xs text-muted flex items-center justify-between">
-            <span>Tipo: <strong className="text-accent font-semibold">Fisioterapeuta clínico</strong> (Tipo_Emp = 1)</span>
-            <span className="text-[11px] uppercase tracking-wider text-subtle">Cédula obligatoria</span>
-          </div>
-        )}
+        <Field label="Tipo de personal" required className="sm:col-span-6" hint={esFisio ? 'Los fisioterapeutas requieren cédula profesional.' : 'Practicante o prestador de servicio: no requiere cédula profesional.'}>
+          <Segmented
+            value={tipoRol}
+            onChange={(v) => {
+              setTipoRol(v)
+              if (v !== 'fisioterapeuta') {
+                setF((prev) => ({ ...prev, CedulaProfesional: '' }))
+              }
+            }}
+            options={[
+              { value: 'fisioterapeuta', label: 'Fisioterapeuta' },
+              { value: 'prestador', label: 'Prestador de servicio' },
+            ]}
+            className="w-full sm:w-fit"
+          />
+        </Field>
 
-        <Field label="Nombre(s)" required className="sm:col-span-6" hint="varchar(100)">
+        <Field label="Nombre(s)" required className="sm:col-span-6">
           <Input maxLength={100} value={f.Nombre_Emp} onChange={set('Nombre_Emp')} placeholder="Ej. Lucía" />
         </Field>
-        <Field label="Apellido paterno" className="sm:col-span-3" hint="varchar(100) — Opcional">
+        <Field label="Apellido paterno" className="sm:col-span-3" hint="Opcional">
           <Input maxLength={100} value={f.ApellidoP_Emp} onChange={set('ApellidoP_Emp')} placeholder="Ej. Ferrer" />
         </Field>
-        <Field label="Apellido materno" required className="sm:col-span-3" hint="varchar(100)">
+        <Field label="Apellido materno" required className="sm:col-span-3">
           <Input maxLength={100} value={f.ApellidoM_Emp} onChange={set('ApellidoM_Emp')} placeholder="Ej. Ruiz" />
         </Field>
 
-        <Field label="Número de empleado (Num_Emp)" required className="sm:col-span-2" hint={duplicado ? <span className="text-danger">Ya está en uso</span> : 'int'}>
+        <Field label="Número de empleado" required className="sm:col-span-2" hint={duplicado ? <span className="text-danger">Ya está en uso</span> : 'Solo números'}>
           <Input inputMode="numeric" value={f.Num_Emp} onChange={(e) => setF({ ...f, Num_Emp: e.target.value.replace(/\D/g, '') })} placeholder="1001" />
         </Field>
-        <Field label="Teléfono (Telefono_Emp)" required className="sm:col-span-2" hint="char(10)">
+        <Field label="Teléfono" required className="sm:col-span-2" hint="10 dígitos">
           <Input inputMode="tel" maxLength={10} value={f.Telefono_Emp} onChange={(e) => setF({ ...f, Telefono_Emp: e.target.value.replace(/\D/g, '') })} placeholder="5512348890" />
         </Field>
-        <Field label="Clave de acceso (Clave)" required className="sm:col-span-2" hint="varchar(15)">
+        <Field label="Clave de acceso" required className="sm:col-span-2" hint="Máximo 15 caracteres">
           <span className="relative block">
             <Input type={ver ? 'text' : 'password'} maxLength={15} value={f.Clave} onChange={set('Clave')} className="pr-10" placeholder="••••••••" />
             <button type="button" onClick={() => setVer(!ver)} className="absolute right-1 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center text-subtle hover:text-fg" aria-label="Mostrar clave">
@@ -191,15 +171,19 @@ export function EmpleadoModal({ empleado, onClose, soloFisio, onSuccess }: Emple
           </span>
         </Field>
 
-        {esFisio && (
-          <Field label="Cédula profesional (CedulaProfesional)" required hint="varchar(10) — 7 a 10 dígitos" className="sm:col-span-2">
-            <Input maxLength={10} value={f.CedulaProfesional} onChange={(e) => setF({ ...f, CedulaProfesional: e.target.value.replace(/\s+/g, '') })} placeholder="10293847" />
-          </Field>
-        )}
+        <Field label="Cédula profesional" required={esFisio} hint={esFisio ? '7 a 10 dígitos' : 'No aplica para prestadores de servicio'} className="sm:col-span-2">
+          <Input
+            maxLength={10}
+            inputMode="numeric"
+            disabled={!esFisio}
+            value={f.CedulaProfesional}
+            onChange={(e) => setF({ ...f, CedulaProfesional: e.target.value.replace(/\D/g, '') })}
+            placeholder={esFisio ? '10293847' : 'No aplica'}
+          />
+        </Field>
 
-        {(esFisio || esPrestador) && (
-          <div className={cn('relative sm:col-span-4', !esFisio && 'sm:col-span-6')}>
-            <Field label="Especialidad (Especialidad)" hint="varchar(50) — Selecciona o escribe una">
+        <div className="relative sm:col-span-4">
+          <Field label="Especialidad" hint="Selecciona o escribe una">
               <div className="relative">
                 <Input
                   maxLength={50}
@@ -264,9 +248,8 @@ export function EmpleadoModal({ empleado, onClose, soloFisio, onSuccess }: Emple
               </>
             )}
           </div>
-        )}
 
-        <Field label="Estatus del empleado (Estatus_Emp)" className="sm:col-span-6" hint="bit">
+        <Field label="Estatus" className="sm:col-span-6">
           <Segmented value={f.Estatus_Emp ? 1 : 0} onChange={(v) => setF({ ...f, Estatus_Emp: v === 1 })} options={[{ value: 1, label: 'Activo' }, { value: 0, label: 'Baja' }]} className="w-fit" />
         </Field>
       </div>

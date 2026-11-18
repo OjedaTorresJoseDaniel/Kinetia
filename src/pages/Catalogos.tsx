@@ -25,7 +25,7 @@ export default function Catalogos() {
         description="Valores de referencia y personal clínico (fisioterapeutas y practicantes) usados al registrar citas y diagnósticos."
         actions={
           tab === 'fisioterapeutas' ? (
-            <Button onClick={() => setEditFisio('nuevo')}><UserPlus />Registrar fisioterapeuta</Button>
+            <Button onClick={() => setEditFisio('nuevo')}><UserPlus />Registrar personal</Button>
           ) : (
             <Button onClick={() => setNuevo(true)}><Plus />Agregar</Button>
           )
@@ -150,7 +150,6 @@ export default function Catalogos() {
       {editFisio && (
         <EmpleadoModal
           empleado={editFisio === 'nuevo' ? undefined : editFisio}
-          soloFisio={editFisio === 'nuevo'}
           onClose={() => setEditFisio(null)}
         />
       )}
