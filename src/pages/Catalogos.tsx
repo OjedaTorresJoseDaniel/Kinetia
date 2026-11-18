@@ -4,15 +4,22 @@ import { useData } from '../context/DataContext'
 import { Avatar, Badge, Button, Card, Field, IconButton, Input, Modal, PageHeader, Select, Table, Tabs, Td, Textarea, Th } from '../components/ui'
 import { EmpleadoModal } from '../components/EmpleadoModal'
 import { formatTel, iniciales, nombreCompleto } from '../lib/format'
-import { rolDe, type Empleado } from '../types'
+import { rolDe, type CatEjercicio, type Empleado, type Lesion, type TipoLesion, type Tratamiento } from '../types'
 
 type Tab = 'lesiones' | 'tipos' | 'tratamientos' | 'categorias' | 'fisioterapeutas'
+
+type CatalogoEdit =
+  | { tab: 'lesiones'; row: Lesion }
+  | { tab: 'tipos'; row: TipoLesion }
+  | { tab: 'tratamientos'; row: Tratamiento }
+  | { tab: 'categorias'; row: CatEjercicio }
 
 export default function Catalogos() {
   const data = useData()
   const [tab, setTab] = useState<Tab>('lesiones')
   const [nuevo, setNuevo] = useState(false)
   const [editFisio, setEditFisio] = useState<Empleado | 'nuevo' | null>(null)
+  const [editCatalogo, setEditCatalogo] = useState<CatalogoEdit | null>(null)
 
   const usoLesion = (id: number) => data.detalleDiag.rows.filter((d) => d.id_Lesion === id).length
   const usoTrata = (id: number) => data.detalleTrata.rows.filter((d) => d.id_Trata === id).length
@@ -90,7 +97,7 @@ export default function Catalogos() {
 
         {tab === 'lesiones' && (
           <Table min={760}>
-            <thead><tr><Th>Lesión</Th><Th>Tipo</Th><Th>Grado</Th><Th>Descripción</Th><Th className="text-right">Diagnósticos</Th></tr></thead>
+            <thead><tr><Th>Lesión</Th><Th>Tipo</Th><Th>Grado</Th><Th>Descripción</Th><Th className="text-right">Diagnósticos</Th><Th /></tr></thead>
             <tbody>
               {data.lesiones.rows.map((l) => (
                 <tr key={l.id_Lesion}>
@@ -99,6 +106,11 @@ export default function Catalogos() {
                   <Td className="text-muted">{l.Grado ?? '—'}</Td>
                   <Td className="max-w-[380px] text-[13px] text-muted">{l.Descrip_Les ?? '—'}</Td>
                   <Td className="tabular text-right font-semibold">{usoLesion(l.id_Lesion)}</Td>
+                  <Td className="text-right">
+                    <IconButton label="Editar lesión" className="size-8" onClick={() => setEditCatalogo({ tab: 'lesiones', row: l })}>
+                      <Pencil className="!size-4" />
+                    </IconButton>
+                  </Td>
                 </tr>
               ))}
             </tbody>
@@ -106,12 +118,17 @@ export default function Catalogos() {
         )}
         {tab === 'tipos' && (
           <Table min={420}>
-            <thead><tr><Th>Tipo de lesión</Th><Th className="text-right">Lesiones asociadas</Th></tr></thead>
+            <thead><tr><Th>Tipo de lesión</Th><Th className="text-right">Lesiones asociadas</Th><Th /></tr></thead>
             <tbody>
               {data.tiposLesion.rows.map((t) => (
                 <tr key={t.id_TipoLes}>
                   <Td className="font-semibold">{t.Nom_TipoLes}</Td>
                   <Td className="tabular text-right font-semibold">{data.lesiones.rows.filter((l) => l.id_TipoLes === t.id_TipoLes).length}</Td>
+                  <Td className="text-right">
+                    <IconButton label="Editar tipo de lesión" className="size-8" onClick={() => setEditCatalogo({ tab: 'tipos', row: t })}>
+                      <Pencil className="!size-4" />
+                    </IconButton>
+                  </Td>
                 </tr>
               ))}
             </tbody>
@@ -119,13 +136,18 @@ export default function Catalogos() {
         )}
         {tab === 'tratamientos' && (
           <Table min={640}>
-            <thead><tr><Th>Tratamiento</Th><Th>Descripción</Th><Th className="text-right">Aplicaciones</Th></tr></thead>
+            <thead><tr><Th>Tratamiento</Th><Th>Descripción</Th><Th className="text-right">Aplicaciones</Th><Th /></tr></thead>
             <tbody>
               {data.tratamientos.rows.map((t) => (
                 <tr key={t.id_Trata}>
                   <Td className="whitespace-nowrap font-semibold">{t.Nombre_Trata}</Td>
                   <Td className="text-[13px] text-muted">{t.Descrip_Trata}</Td>
                   <Td className="tabular text-right font-semibold">{usoTrata(t.id_Trata)}</Td>
+                  <Td className="text-right">
+                    <IconButton label="Editar tratamiento" className="size-8" onClick={() => setEditCatalogo({ tab: 'tratamientos', row: t })}>
+                      <Pencil className="!size-4" />
+                    </IconButton>
+                  </Td>
                 </tr>
               ))}
             </tbody>
@@ -133,12 +155,17 @@ export default function Catalogos() {
         )}
         {tab === 'categorias' && (
           <Table min={420}>
-            <thead><tr><Th>Categoría</Th><Th className="text-right">Ejercicios disponibles</Th></tr></thead>
+            <thead><tr><Th>Categoría</Th><Th className="text-right">Ejercicios disponibles</Th><Th /></tr></thead>
             <tbody>
               {data.catEjercicios.rows.map((c) => (
                 <tr key={c.id_CatEjer}>
                   <Td className="font-semibold">{c.Nombre_CatEjer ?? '—'}</Td>
                   <Td className="tabular text-right font-semibold">{data.ejercicios.rows.filter((e) => e.id_CatEjer === c.id_CatEjer).length}</Td>
+                  <Td className="text-right">
+                    <IconButton label="Editar categoría" className="size-8" onClick={() => setEditCatalogo({ tab: 'categorias', row: c })}>
+                      <Pencil className="!size-4" />
+                    </IconButton>
+                  </Td>
                 </tr>
               ))}
             </tbody>
@@ -146,7 +173,8 @@ export default function Catalogos() {
         )}
       </Card>
 
-      {nuevo && <NuevoCatalogo tab={tab} onClose={() => setNuevo(false)} />}
+      {nuevo && <CatalogoModal tab={tab} onClose={() => setNuevo(false)} />}
+      {editCatalogo && <CatalogoModal tab={editCatalogo.tab} edit={editCatalogo} onClose={() => setEditCatalogo(null)} />}
       {editFisio && (
         <EmpleadoModal
           empleado={editFisio === 'nuevo' ? undefined : editFisio}
@@ -157,27 +185,51 @@ export default function Catalogos() {
   )
 }
 
-function NuevoCatalogo({ tab, onClose }: { tab: Tab; onClose: () => void }) {
+function CatalogoModal({ tab, edit, onClose }: { tab: Tab; edit?: CatalogoEdit; onClose: () => void }) {
   const data = useData()
-  const [a, setA] = useState('')
-  const [b, setB] = useState('')
-  const [tipo, setTipo] = useState(data.tiposLesion.rows[0]?.id_TipoLes ?? 0)
-  const [grado, setGrado] = useState('')
+  const [a, setA] = useState(
+    edit?.tab === 'lesiones' ? edit.row.Nom_Les
+      : edit?.tab === 'tipos' ? edit.row.Nom_TipoLes
+        : edit?.tab === 'tratamientos' ? edit.row.Nombre_Trata
+          : edit?.tab === 'categorias' ? edit.row.Nombre_CatEjer ?? ''
+            : '',
+  )
+  const [b, setB] = useState(
+    edit?.tab === 'lesiones' ? edit.row.Descrip_Les ?? ''
+      : edit?.tab === 'tratamientos' ? edit.row.Descrip_Trata
+        : '',
+  )
+  const [tipo, setTipo] = useState(edit?.tab === 'lesiones' ? edit.row.id_TipoLes : data.tiposLesion.rows[0]?.id_TipoLes ?? 0)
+  const [grado, setGrado] = useState(edit?.tab === 'lesiones' ? edit.row.Grado ?? '' : '')
 
   const titulos: Record<Tab, string> = {
     fisioterapeutas: 'Registrar fisioterapeuta',
-    lesiones: 'Nueva lesión',
-    tipos: 'Nuevo tipo de lesión',
-    tratamientos: 'Nuevo tratamiento',
-    categorias: 'Nueva categoría de ejercicio',
+    lesiones: edit ? 'Editar lesión' : 'Nueva lesión',
+    tipos: edit ? 'Editar tipo de lesión' : 'Nuevo tipo de lesión',
+    tratamientos: edit ? 'Editar tratamiento' : 'Nuevo tratamiento',
+    categorias: edit ? 'Editar categoría de ejercicio' : 'Nueva categoría de ejercicio',
   }
   const valido = a.trim() && (tab !== 'tratamientos' || b.trim())
 
   const guardar = () => {
-    if (tab === 'lesiones') data.lesiones.add({ id_TipoLes: tipo, Nom_Les: a.trim(), Grado: grado.trim() || null, Descrip_Les: b.trim() || null })
-    if (tab === 'tipos') data.tiposLesion.add({ Nom_TipoLes: a.trim() })
-    if (tab === 'tratamientos') data.tratamientos.add({ Nombre_Trata: a.trim(), Descrip_Trata: b.trim() })
-    if (tab === 'categorias') data.catEjercicios.add({ Nombre_CatEjer: a.trim() })
+    if (tab === 'lesiones') {
+      const row = { id_TipoLes: tipo, Nom_Les: a.trim(), Grado: grado.trim() || null, Descrip_Les: b.trim() || null }
+      if (edit?.tab === 'lesiones') data.lesiones.update(edit.row.id_Lesion, row)
+      else data.lesiones.add(row)
+    }
+    if (tab === 'tipos') {
+      if (edit?.tab === 'tipos') data.tiposLesion.update(edit.row.id_TipoLes, { Nom_TipoLes: a.trim() })
+      else data.tiposLesion.add({ Nom_TipoLes: a.trim() })
+    }
+    if (tab === 'tratamientos') {
+      const row = { Nombre_Trata: a.trim(), Descrip_Trata: b.trim() }
+      if (edit?.tab === 'tratamientos') data.tratamientos.update(edit.row.id_Trata, row)
+      else data.tratamientos.add(row)
+    }
+    if (tab === 'categorias') {
+      if (edit?.tab === 'categorias') data.catEjercicios.update(edit.row.id_CatEjer, { Nombre_CatEjer: a.trim() })
+      else data.catEjercicios.add({ Nombre_CatEjer: a.trim() })
+    }
     onClose()
   }
 
