@@ -201,7 +201,7 @@ function NuevoCatalogo({ tab, onClose }: { tab: Tab; onClose: () => void }) {
                 {data.tiposLesion.rows.map((t) => <option key={t.id_TipoLes} value={t.id_TipoLes}>{t.Nom_TipoLes}</option>)}
               </Select>
             </Field>
-            <Field label="Grado"><Input maxLength={5} value={grado} onChange={(e) => setGrado(e.target.value)} placeholder="I, II…" /></Field>
+            <Field label="Grado" hint="Solo números"><Input inputMode="numeric" maxLength={2} value={grado} onChange={(e) => setGrado(e.target.value.replace(/\D/g, ''))} placeholder="1, 2, 3…" /></Field>
           </div>
         )}
         <Field label="Nombre" required>

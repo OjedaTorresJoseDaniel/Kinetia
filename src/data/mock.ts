@@ -88,13 +88,13 @@ export const tiposLesion: TipoLesion[] = [
 ]
 
 export const lesiones: Lesion[] = [
-  { id_Lesion: 1, id_TipoLes: 1, Nom_Les: 'Desgarro de isquiotibiales', Grado: 'II', Descrip_Les: 'Rotura parcial de fibras musculares del compartimento posterior del muslo.' },
+  { id_Lesion: 1, id_TipoLes: 1, Nom_Les: 'Desgarro de isquiotibiales', Grado: '2', Descrip_Les: 'Rotura parcial de fibras musculares del compartimento posterior del muslo.' },
   { id_Lesion: 2, id_TipoLes: 1, Nom_Les: 'Contractura de trapecio', Grado: null, Descrip_Les: 'Contracción involuntaria y sostenida del trapecio superior.' },
-  { id_Lesion: 3, id_TipoLes: 2, Nom_Les: 'Esguince de tobillo', Grado: 'II', Descrip_Les: 'Distensión con rotura parcial del ligamento peroneoastragalino anterior.' },
-  { id_Lesion: 4, id_TipoLes: 2, Nom_Les: 'Rotura de LCA', Grado: 'III', Descrip_Les: 'Rotura completa del ligamento cruzado anterior de la rodilla.' },
+  { id_Lesion: 3, id_TipoLes: 2, Nom_Les: 'Esguince de tobillo', Grado: '2', Descrip_Les: 'Distensión con rotura parcial del ligamento peroneoastragalino anterior.' },
+  { id_Lesion: 4, id_TipoLes: 2, Nom_Les: 'Rotura de LCA', Grado: '3', Descrip_Les: 'Rotura completa del ligamento cruzado anterior de la rodilla.' },
   { id_Lesion: 5, id_TipoLes: 3, Nom_Les: 'Tendinopatía del supraespinoso', Grado: null, Descrip_Les: 'Degeneración del tendón del supraespinoso con dolor en abducción.' },
   { id_Lesion: 6, id_TipoLes: 3, Nom_Les: 'Fascitis plantar', Grado: null, Descrip_Les: 'Inflamación de la fascia plantar en su inserción calcánea.' },
-  { id_Lesion: 7, id_TipoLes: 4, Nom_Les: 'Gonartrosis', Grado: 'II', Descrip_Les: 'Desgaste del cartílago articular de la rodilla.' },
+  { id_Lesion: 7, id_TipoLes: 4, Nom_Les: 'Gonartrosis', Grado: '2', Descrip_Les: 'Desgaste del cartílago articular de la rodilla.' },
   { id_Lesion: 8, id_TipoLes: 4, Nom_Les: 'Cervicalgia mecánica', Grado: null, Descrip_Les: 'Dolor cervical asociado a postura y sobrecarga.' },
   { id_Lesion: 9, id_TipoLes: 5, Nom_Les: 'Fractura de radio distal', Grado: null, Descrip_Les: 'Fractura de Colles en fase de consolidación.' },
   { id_Lesion: 10, id_TipoLes: 6, Nom_Les: 'Lumbociática', Grado: null, Descrip_Les: 'Dolor lumbar irradiado por compresión de raíz nerviosa L5-S1.' },
