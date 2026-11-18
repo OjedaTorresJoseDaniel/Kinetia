@@ -34,7 +34,7 @@ export function CitaModal({ open, onClose, fecha, hora, id_Pac, id_Emp, onCreate
       open={open}
       onClose={onClose}
       title="Nueva cita"
-      description="El folio se genera automáticamente y la cita se registra en la agenda."
+      description="El folio se genera automáticamente y la cita se registra en la agenda. Puedes agendar varias personas en la misma fecha y hora."
       footer={
         <>
           <Button variant="secondary" onClick={onClose}>Cancelar</Button>

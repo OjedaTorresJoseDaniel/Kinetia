@@ -269,7 +269,7 @@ export default function Agenda() {
         open={!!selEv}
         onClose={() => setSel(null)}
         title={selEv?.c ? 'Detalle de la cita' : 'Bloqueo de horario'}
-        footer={selEv && <DetalleAcciones key={selEv.c?.id_Cita ?? `b${selEv.a.id_Agenda}`} ev={selEv} esFisio={esFisio} onClose={() => setSel(null)} navigate={navigate} />}
+        footer={selEv && <DetalleAcciones key={selEv.c?.id_Cita ?? `b${selEv.a.id_Agenda}`} ev={selEv} esFisio={esFisio} onClose={() => setSel(null)} onNueva={() => { if (selEv.c) setNueva({ tipo: 'cita', fecha: selEv.c.Fecha_Cita, hora: selEv.c.Hora_Cita, id_Emp: selEv.c.id_Emp }); setSel(null) }} navigate={navigate} />}
       >
         {selEv && <Detalle ev={selEv} />}
       </Drawer>
@@ -634,7 +634,7 @@ function Detalle({ ev }: { ev: Ev }) {
   )
 }
 
-function DetalleAcciones({ ev, esFisio, onClose, navigate }: { ev: Ev; esFisio: boolean; onClose: () => void; navigate: ReturnType<typeof useNavigate> }) {
+function DetalleAcciones({ ev, esFisio, onClose, onNueva, navigate }: { ev: Ev; esFisio: boolean; onClose: () => void; onNueva: () => void; navigate: ReturnType<typeof useNavigate> }) {
   const data = useData()
   const [confirmando, setConfirmando] = useState(false)
   const c = ev.c
@@ -658,6 +658,7 @@ function DetalleAcciones({ ev, esFisio, onClose, navigate }: { ev: Ev; esFisio: 
   }
   return (
     <>
+      {c.Estatus_Cita && <Button variant="secondary" size="sm" onClick={onNueva} title="Agendar otra cita a esta misma hora"><CalendarPlus />Otra cita</Button>}
       {!c.Estatus_Cita && <Button variant="secondary" onClick={() => data.citas.update(c.id_Cita, { Estatus_Cita: true })}><Undo2 />Reactivar cita</Button>}
       {c.Estatus_Cita && !diag && <Button variant="secondary" onClick={() => setConfirmando(true)}><X />Cancelar cita</Button>}
       {esFisio && c.Estatus_Cita && !diag && (

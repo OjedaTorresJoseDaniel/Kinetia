@@ -67,7 +67,7 @@ export default function Citas() {
 
         <p className="flex items-start gap-2 border-t border-line px-4 py-3 text-[13px] text-muted">
           <Info className="mt-0.5 size-4 shrink-0 text-subtle" />
-          <span>Cancelar libera el horario y mueve la cita a la pestaña «Canceladas»; no se borra y se puede reactivar. Una cita con diagnóstico ya no se puede cancelar.</span>
+           <span>Se permiten varias citas en la misma fecha y hora. Cancelar libera esa cita y la mueve a la pestaña «Canceladas»; no se borra y se puede reactivar. Una cita con diagnóstico ya no se puede cancelar.</span>
         </p>
 
         {lista.length === 0 ? (

@@ -369,7 +369,7 @@ export function Drawer({ open, onClose, title, children, footer }: { open: boole
           <IconButton label="Cerrar" onClick={onClose} className="-mr-2"><X /></IconButton>
         </div>
         <div className="flex-1 overflow-y-auto">{children}</div>
-        {footer && <div className="flex gap-2 border-t border-line px-6 py-4">{footer}</div>}
+        {footer && <div className="flex flex-wrap items-center gap-2 border-t border-line px-6 py-4">{footer}</div>}
       </aside>
     </div>
   )
